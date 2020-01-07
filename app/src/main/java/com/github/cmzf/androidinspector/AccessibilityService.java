@@ -8,6 +8,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static final String TAG = AccessibilityService.class.getCanonicalName();
 
     private static AccessibilityService instance;
+    private volatile AccessibilityNodeInfo eventRootInActiveWindow;
 
     public static AccessibilityService getInstance() {
         return instance;
@@ -24,6 +25,13 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     public void onAccessibilityEvent(final AccessibilityEvent event) {
         instance = this;
         Log.v(TAG, "onAccessibilityEvent: " + event);
+
+        new Thread(() -> {
+            AccessibilityNodeInfo eventRootNode = super.getRootInActiveWindow();
+            if (eventRootNode != null) {
+                eventRootInActiveWindow = eventRootNode;
+            }
+        }).start();
     }
 
     public String getCurrentPackage() {
@@ -37,7 +45,11 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     }
 
     public AccessibilityNodeInfo getRootUiObject() {
-        return super.getRootInActiveWindow();
+        AccessibilityNodeInfo root = eventRootInActiveWindow;
+        if (root == null) {
+            root = super.getRootInActiveWindow();
+        }
+        return root;
     }
 
 }
