@@ -1,5 +1,6 @@
 package com.github.cmzf.androidinspector;
 
+import com.alibaba.fastjson.JSON;
 import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
@@ -33,9 +34,15 @@ public class InspectorServer {
         response.send("Hello, World!");
     }
 
+    private void apiTree(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
+        response.setContentType("application/json");
+        response.send(JSON.toJSONString(new String[]{"Hello", "World!"}));
+    }
+
     public void start(Integer port) {
         stop();
         httpServer.get("/", this::pageIndex);
+        httpServer.get("/api/tree", this::apiTree);
         httpServer.listen(asyncServer, port);
     }
 
