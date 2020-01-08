@@ -35,8 +35,8 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     }
 
     public String getCurrentPackage() {
-        AccessibilityNodeInfo root = getRootUiObject();
-        return root != null ? String.valueOf(root.getPackageName()) : "";
+        UiObject root = getRootUiObject();
+        return root != null ? root.getPkg() : "";
     }
 
     @Override
@@ -44,12 +44,12 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
 
     }
 
-    public AccessibilityNodeInfo getRootUiObject() {
+    public UiObject getRootUiObject() {
         AccessibilityNodeInfo root = eventRootInActiveWindow;
         if (root == null) {
             root = super.getRootInActiveWindow();
         }
-        return root;
+        return UiObject.wrap(root);
     }
 
 }
