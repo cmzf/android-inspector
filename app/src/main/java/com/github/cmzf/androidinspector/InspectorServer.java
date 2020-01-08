@@ -36,7 +36,7 @@ public class InspectorServer {
 
     private void apiTree(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
         response.setContentType("application/json");
-        response.send(JSON.toJSONString(AccessibilityService.getInstance().getRootUiObject()));
+        response.send(JSON.toJSONString(AccessibilityService.getInstance().getRootUiObject().uiTree()));
     }
 
     public void start(Integer port) {

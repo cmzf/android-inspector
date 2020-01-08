@@ -42,6 +42,19 @@ public class UiObject {
                 + " />";
     }
 
+    public UiTree<UiObject> uiTree() {
+        return uiTree(this);
+    }
+
+    public UiTree<UiObject> uiTree(UiObject node) {
+        ArrayList<UiTree<UiObject>> treeChildren = new ArrayList<>();
+        ArrayList<UiObject> children = node.children();
+        for (UiObject child : children) {
+            treeChildren.add(treeChildren.size(), uiTree(child));
+        }
+        return new UiTree<>(node, treeChildren);
+    }
+
     public ArrayList<UiObject> children() {
         if (mInfo == null) {
             return new ArrayList<>();
@@ -227,4 +240,23 @@ public class UiObject {
         return mInfo.isShowingHintText();
     }
 
+    public static class UiTree<T> implements Serializable {
+        private T node;
+        private ArrayList<UiTree<T>> children;
+
+        public UiTree(T node, ArrayList<UiTree<T>> children) {
+            this.node = node;
+            if (children.size() > 0) {
+                this.children = children;
+            }
+        }
+
+        public T getNode() {
+            return node;
+        }
+
+        public ArrayList<UiTree<T>> getChildren() {
+            return children;
+        }
+    }
 }
