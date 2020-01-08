@@ -11,5 +11,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InspectorServer.getInstance().start();
+        AccessibilityService.setAppContext(this);
     }
 }
