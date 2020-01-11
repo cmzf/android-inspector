@@ -40,10 +40,16 @@ public class InspectorServer {
         response.send(JSON.toJSONString(AccessibilityService.getInstance().getRootUiObject().uiTree()));
     }
 
+    private void apiScreen(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
+        response.getHeaders().set("Access-Control-Allow-Origin", "*");
+        response.send("image/jpg", ScreenCaptureService.getInstance().getScreenImage());
+    }
+
     public void start(Integer port) {
         stop();
         httpServer.get("/", this::pageIndex);
         httpServer.get("/api/tree", this::apiTree);
+        httpServer.get("/api/screen", this::apiScreen);
         httpServer.listen(asyncServer, port);
     }
 
