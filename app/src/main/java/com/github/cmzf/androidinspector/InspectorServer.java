@@ -32,17 +32,20 @@ public class InspectorServer {
 
     private void pageIndex(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
         response.send("Hello, World!");
+        response.end();
     }
 
     private void apiTree(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
         response.setContentType("application/json");
         response.getHeaders().set("Access-Control-Allow-Origin", "*");
         response.send(JSON.toJSONString(AccessibilityService.getInstance().getRootUiObject().uiTree()));
+        response.end();
     }
 
     private void apiScreen(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
         response.getHeaders().set("Access-Control-Allow-Origin", "*");
         response.send("image/jpg", ScreenCaptureService.getInstance().getScreenImage());
+        response.end();
     }
 
     public void start(Integer port) {
