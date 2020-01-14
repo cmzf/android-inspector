@@ -115,8 +115,6 @@ public class ScreenCaptureService {
         mWidth = size.x;
         mHeight = size.y;
 
-        System.out.println("mWidth:" + mWidth + ", mHeight:" + mHeight);
-
         // start capture reader
         mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
         mVirtualDisplay = mMediaProjection.createVirtualDisplay(TAG, mWidth, mHeight, mDensity,
