@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        InspectorServer.getInstance().start();
+        InspectorServer.getInstance().startServer(this);
         AccessibilityService.setAppContext(this);
         ScreenCaptureService.getInstance().startProjection(this, REQUESR_SCREEN_CAPTURE);
     }

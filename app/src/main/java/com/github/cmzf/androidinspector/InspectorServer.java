@@ -1,15 +1,21 @@
 package com.github.cmzf.androidinspector;
 
+import android.content.Context;
+
 import com.alibaba.fastjson.JSON;
 import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
+import com.koushikdutta.async.http.server.AsyncHttpServerRouter;
+
+import java.io.IOException;
 
 public class InspectorServer {
     private static InspectorServer instance;
     private AsyncServer asyncServer = new AsyncServer();
     private AsyncHttpServer httpServer = new AsyncHttpServer();
+    private Context mAppContext;
 
     private InspectorServer() {
     }
@@ -21,18 +27,13 @@ public class InspectorServer {
         return instance;
     }
 
-    public void start() {
-        start(8080);
+    public void startServer(Context context) {
+        startServer(context, 8080);
     }
 
     public void stop() {
         httpServer.stop();
         asyncServer.stop();
-    }
-
-    private void pageIndex(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-        response.send("Hello, World!");
-        response.end();
     }
 
     private void apiTree(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
@@ -48,12 +49,24 @@ public class InspectorServer {
         response.end();
     }
 
-    public void start(Integer port) {
+    public void startServer(Context context, int port) {
         stop();
-        httpServer.get("/", this::pageIndex);
+        mAppContext = context;
         httpServer.get("/api/tree", this::apiTree);
         httpServer.get("/api/screen", this::apiScreen);
+        httpServer.get("/.*", this::assetLoader);
         httpServer.listen(asyncServer, port);
+    }
+
+    private void assetLoader(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
+        AsyncHttpServerRouter.Asset asset = AsyncHttpServer.getAssetStream(mAppContext, request.getPath().substring(1));
+        if (asset != null) {
+            response.sendStream(asset.inputStream, asset.available);
+        }
+        else {
+            response.code(404);
+        }
+        response.end();
     }
 
 }
