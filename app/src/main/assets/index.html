@@ -1,8 +1,182 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Hello, World!</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="./inspector.css"/>
+    <title>Android Inspector</title>
 </head>
 <body>
-    <p>Hello, World!</p>
+<div id="container">
+    <div id="prepare-mask"></div>
+    <div id="panel1">
+        <div class="tabs"># screen</div>
+        <div id="screen">
+            <img src="/api/screen" height="100%"/>
+        </div>
+    </div>
+    <div id="panel2">
+        <div id="panel21">
+            <div class="tabs"># tree</div>
+            <div id="tree"></div>
+        </div>
+        <div id="panel22">
+            <div class="tabs"># attrs</div>
+            <div id="attrs">
+                <table>
+                    <tr>
+                        <th class="name">attr</th>
+                        <th class="value">value</th>
+                    </tr>
+                    <tr id="attr-id">
+                        <td class="name">id</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-cls">
+                        <td class="name">cls</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-pkg">
+                        <td class="name">pkg</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-text">
+                        <td class="name">text</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-desc">
+                        <td class="name">desc</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-xpath">
+                        <td class="name">xpath</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-bounds">
+                        <td class="name">bounds</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-visibleToUser">
+                        <td class="name">visibleToUser</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-index">
+                        <td class="name">index</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-childCount">
+                        <td class="name">childCount</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-checkable">
+                        <td class="name">checkable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-clickable">
+                        <td class="name">clickable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-contextClickable">
+                        <td class="name">contextClickable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-dismissable">
+                        <td class="name">dismissable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-editable">
+                        <td class="name">editable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-focusable">
+                        <td class="name">focusable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-longClickable">
+                        <td class="name">longClickable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-scrollable">
+                        <td class="name">scrollable</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-accessibilityFocused">
+                        <td class="name">accessibilityFocused</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-checked">
+                        <td class="name">checked</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-enabled">
+                        <td class="name">enabled</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-focused">
+                        <td class="name">focused</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-selected">
+                        <td class="name">selected</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-contentInvalid">
+                        <td class="name">contentInvalid</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-drawingOrder">
+                        <td class="name">drawingOrder</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-extraData">
+                        <td class="name">extraData</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-extras">
+                        <td class="name">extras</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-hintText">
+                        <td class="name">hintText</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-inputType">
+                        <td class="name">inputType</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-maxTextLength">
+                        <td class="name">maxTextLength</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-multiLine">
+                        <td class="name">multiLine</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-password">
+                        <td class="name">password</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-showingHintText">
+                        <td class="name">showingHintText</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-textSelectionEnd">
+                        <td class="name">textSelectionEnd</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-textSelectionStart">
+                        <td class="name">textSelectionStart</td>
+                        <td class="value"></td>
+                    </tr>
+                    <tr id="attr-windowId">
+                        <td class="name">windowId</td>
+                        <td class="value"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./jquery-3.4.1.min.js"></script>
+<script src="./inspector.js"></script>
 </body>
 </html>

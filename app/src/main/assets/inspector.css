@@ -1,0 +1,217 @@
+html,
+body {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+#container {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 10px;
+    position: relative;
+    min-height: 700px;
+}
+#prepare-mask {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 9999;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+#panel1,
+#panel2 {
+    box-sizing: border-box;
+    height: 100%;
+    min-width: 300px;
+    padding-top: 2em;
+    position: relative;
+}
+
+#panel1 {
+    float: left;
+}
+#panel2 {
+    margin-left: 300px;
+}
+
+#panel21,
+#panel22 {
+    box-sizing: border-box;
+    float: left;
+    height: 100%;
+    min-width: 500px;
+    overflow-y: auto;
+    padding-left: 1.5em;
+    width: 50%;
+}
+
+#panel1 .tabs,
+#panel2 .tabs {
+    position: absolute;
+    margin-left: 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+    top: 0;
+}
+
+#screen {
+    float: left;
+    height: 100%;
+    position: relative;
+}
+
+#screen .node {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    padding: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#screen .node.node0 {
+    outline: 1px solid #ffffff;
+}
+
+#screen .node.hover {
+    outline: 1px solid #0066ff !important;
+    z-index: 9999 !important;
+}
+
+#screen .node.current {
+    background: #ff000033;
+    outline: 1px solid #ff0000;
+}
+
+#tree {
+    box-sizing: border-box;
+    cursor: default;
+    float: left;
+    min-height: 1.65em;
+    position: relative;
+    width: 100%;
+}
+
+#tree .node {
+    border: 1px solid #0066ff;
+    list-style-type: none;
+    padding: 0 0 0 10px;
+    border-width: 1px 0 0 1px;
+    background: #ffffff33;
+    display: none;
+}
+
+#tree .node .name {
+    display: block;
+    padding: 3px 0;
+}
+
+#tree .node.node0 {
+    border-width: 1px;
+}
+
+#tree .node.invisible {
+    text-decoration: line-through;
+}
+
+#tree .node.hover {
+    background-color: #00ff0099;
+}
+
+#tree .node.descendants>.name::after {
+    content: "+";
+    float: right;
+    padding-right: 10px;
+    transition: 0.5s ease-in-out;
+}
+
+#tree .node.descendants>.node {
+    display: none !important;
+}
+
+#tree .node.descendants.expand>.name::after {
+    content: "-";
+    float: right;
+    padding-right: 10px;
+    transition: 0.5s ease-in-out;
+}
+
+#tree .node.descendants.expand>.node {
+    display: block !important;
+}
+
+#tree .node.current {
+    background-color: #ff000099;
+    border-color: #ff0000;
+}
+
+#tree .node.current>.name {
+    color: #ffffff;
+}
+
+/* #tree .current>.name::before {
+    content: "▶";
+    margin-right: 5px;
+    font-size: 0.8em;
+} */
+
+#attrs {
+    float: left;
+    position: relative;
+    width: 100%;
+}
+
+#attrs table {
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    word-break: break-all;
+}
+
+#attrs td,
+th {
+    border: 1px solid #0066ff;
+    padding: 3px 10px;
+    text-align: left;
+}
+
+#attrs tr:nth-child(even) {
+    background: #f6f6f6;
+}
+
+#attrs .name {
+    width: 30%;
+}
+
+
+#logs {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    float: left;
+    position: relative;
+    border: 1px solid #0066ff;
+    padding: 1em;
+    width: 600px;
+    box-sizing: border-box;
+}
+
+#console {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    float: left;
+    position: relative;
+    border: 1px solid #0066ff;
+    padding: 1em;
+    width: 600px;
+    box-sizing: border-box;
+}
