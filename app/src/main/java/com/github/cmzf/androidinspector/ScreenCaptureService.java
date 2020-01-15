@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
@@ -35,14 +34,12 @@ public class ScreenCaptureService {
     private Handler mHandler;
     private Display mDisplay;
     private VirtualDisplay mVirtualDisplay;
-    private int mDensity;
-    private int mWidth;
-    private int mHeight;
     private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
     private Activity mAppActivity;
     private byte[] mScreenImage;
     private int mRequestCode;
+    private DisplayMetrics mMetrics = new DisplayMetrics();
 
     public static ScreenCaptureService getInstance() {
         if (sInstance == null) {
@@ -80,9 +77,6 @@ public class ScreenCaptureService {
             mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
             if (mMediaProjection != null) {
-                // display metrics
-                DisplayMetrics metrics = mAppActivity.getResources().getDisplayMetrics();
-                mDensity = metrics.densityDpi;
                 mDisplay = mAppActivity.getWindowManager().getDefaultDisplay();
 
                 // create virtual display depending on device width / height
@@ -109,15 +103,11 @@ public class ScreenCaptureService {
     }
 
     private void createVirtualDisplay() {
-        // get width and height
-        Point size = new Point();
-        mDisplay.getRealSize(size);
-        mWidth = size.x;
-        mHeight = size.y;
+        mDisplay.getRealMetrics(mMetrics);
 
         // start capture reader
-        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
-        mVirtualDisplay = mMediaProjection.createVirtualDisplay(TAG, mWidth, mHeight, mDensity,
+        mImageReader = ImageReader.newInstance(mMetrics.widthPixels, mMetrics.heightPixels, PixelFormat.RGBA_8888, 2);
+        mVirtualDisplay = mMediaProjection.createVirtualDisplay(TAG, mMetrics.widthPixels, mMetrics.heightPixels, mMetrics.densityDpi,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                 mImageReader.getSurface(), null, mHandler);
         mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);
@@ -136,13 +126,13 @@ public class ScreenCaptureService {
                 ByteBuffer buffer = planes[0].getBuffer();
                 int pixelStride = planes[0].getPixelStride();
                 int rowStride = planes[0].getRowStride();
-                int rowPadding = rowStride - pixelStride * mWidth;
+                int rowPadding = rowStride - pixelStride * mMetrics.widthPixels;
 
                 // create bitmap
-                Bitmap bitmap = Bitmap.createBitmap(mWidth + rowPadding / pixelStride, mHeight, Bitmap.Config.ARGB_8888);
+                Bitmap bitmap = Bitmap.createBitmap(mMetrics.widthPixels + rowPadding / pixelStride, mMetrics.heightPixels, Bitmap.Config.ARGB_8888);
                 bitmap.copyPixelsFromBuffer(buffer);
                 // trim black border
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, mWidth, mHeight);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, mMetrics.widthPixels, mMetrics.heightPixels);
 
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 85, byteStream);
