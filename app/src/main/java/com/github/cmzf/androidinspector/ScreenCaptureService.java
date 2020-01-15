@@ -35,7 +35,6 @@ public class ScreenCaptureService {
     private Handler mHandler;
     private Display mDisplay;
     private VirtualDisplay mVirtualDisplay;
-    private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
     private Activity mAppActivity;
     private int mRequestCode;
@@ -125,7 +124,6 @@ public class ScreenCaptureService {
     private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
         @Override
         public void onImageAvailable(ImageReader reader) {
-
             Image image = reader.acquireLatestImage();
             if (image != null) {
                 Image.Plane[] planes = image.getPlanes();
@@ -158,9 +156,7 @@ public class ScreenCaptureService {
 
         @Override
         public void onOrientationChanged(int orientation) {
-            final int rotation = mDisplay.getRotation();
-            if (rotation != mRotation) {
-                mRotation = rotation;
+            mHandler.postDelayed(() -> {
                 try {
                     // clean up
                     if (mVirtualDisplay != null) mVirtualDisplay.release();
@@ -171,7 +167,7 @@ public class ScreenCaptureService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            }, 2000);
         }
     }
 
