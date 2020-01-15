@@ -28,6 +28,7 @@ public class ScreenCaptureService {
 
     private static final String TAG = ScreenCaptureService.class.getCanonicalName();
     private static ScreenCaptureService sInstance;
+    private final Object mScreenBitmapLock = new Object();
     private MediaProjection mMediaProjection;
     private MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
@@ -37,9 +38,9 @@ public class ScreenCaptureService {
     private int mRotation;
     private OrientationChangeCallback mOrientationChangeCallback;
     private Activity mAppActivity;
-    private byte[] mScreenImage;
     private int mRequestCode;
     private DisplayMetrics mMetrics = new DisplayMetrics();
+    private Bitmap mScreenBitmap;
 
     public static ScreenCaptureService getInstance() {
         if (sInstance == null) {
@@ -114,12 +115,17 @@ public class ScreenCaptureService {
     }
 
     public byte[] getScreenImage() {
-        return mScreenImage;
+        synchronized (mScreenBitmapLock) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            mScreenBitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
+            return stream.toByteArray();
+        }
     }
 
     private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
         @Override
         public void onImageAvailable(ImageReader reader) {
+
             Image image = reader.acquireLatestImage();
             if (image != null) {
                 Image.Plane[] planes = image.getPlanes();
@@ -131,12 +137,10 @@ public class ScreenCaptureService {
                 // create bitmap
                 Bitmap bitmap = Bitmap.createBitmap(mMetrics.widthPixels + rowPadding / pixelStride, mMetrics.heightPixels, Bitmap.Config.ARGB_8888);
                 bitmap.copyPixelsFromBuffer(buffer);
-                // trim black border
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, mMetrics.widthPixels, mMetrics.heightPixels);
-
-                ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 85, byteStream);
-                mScreenImage = byteStream.toByteArray();
+                synchronized (mScreenBitmapLock) {
+                    // trim black border
+                    mScreenBitmap = Bitmap.createBitmap(bitmap, 0, 0, mMetrics.widthPixels, mMetrics.heightPixels);
+                }
                 bitmap.recycle();
             }
 
