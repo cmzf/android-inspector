@@ -1,7 +1,6 @@
 package com.github.cmzf.androidinspector;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -13,13 +12,8 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     private static final String TAG = AccessibilityService.class.getCanonicalName();
 
     private static AccessibilityService instance;
-    private static Context appContext;
     private volatile AccessibilityNodeInfo eventRootInActiveWindow;
     private volatile String currentActivity = "";
-
-    public static void setAppContext(Context context) {
-        appContext = context;
-    }
 
     public static AccessibilityService getInstance() {
         return instance;
@@ -51,12 +45,12 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     }
 
     private void setCurrentActivity(String pkgName, String clsName) {
-        if (appContext == null || clsName.startsWith("android.view.") || clsName.startsWith("android.widget.")) {
+        if (clsName.startsWith("android.view.") || clsName.startsWith("android.widget.")) {
             return;
         }
         try {
             ComponentName componentName = new ComponentName(pkgName, clsName);
-            currentActivity = appContext.getPackageManager().getActivityInfo(componentName, 0).name;
+            currentActivity = Global.getMainActivity().getPackageManager().getActivityInfo(componentName, 0).name;
         } catch (PackageManager.NameNotFoundException e) {
             return;
         }

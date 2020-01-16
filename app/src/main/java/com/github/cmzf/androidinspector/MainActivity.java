@@ -14,20 +14,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        InspectorServer.getInstance().startServer(this);
-        AccessibilityService.setAppContext(this);
-        ScreenCaptureService.getInstance().startProjection(this, REQUESR_SCREEN_CAPTURE);
+
+        Global.setMainActivity(this);
+        Global.setMainApplication(this.getApplication());
+
+        Global.getInspectorServer().startServer(8080);
+        Global.getScreenCaptureService().startProjection(REQUESR_SCREEN_CAPTURE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ScreenCaptureService.getInstance().onActivityResult(requestCode, resultCode, data);
+        Global.getScreenCaptureService().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ScreenCaptureService.getInstance().stopProjection();
+        Global.getScreenCaptureService().stopProjection();
     }
 }

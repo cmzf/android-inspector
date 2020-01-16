@@ -2,7 +2,6 @@ package com.github.cmzf.androidinspector;
 
 // https://github.com/mtsahakis/MediaProjectionDemo
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,7 +35,6 @@ public class ScreenCaptureService {
     private Display mDisplay;
     private VirtualDisplay mVirtualDisplay;
     private OrientationChangeCallback mOrientationChangeCallback;
-    private Activity mAppActivity;
     private int mRequestCode;
     private DisplayMetrics mMetrics = new DisplayMetrics();
     private Bitmap mScreenBitmap;
@@ -48,8 +46,7 @@ public class ScreenCaptureService {
         return sInstance;
     }
 
-    public void startProjection(Activity activity, int requestCode) {
-        mAppActivity = activity;
+    public void startProjection(int requestCode) {
         mRequestCode = requestCode;
 
         if (mProjectionManager != null) {
@@ -57,7 +54,7 @@ public class ScreenCaptureService {
         }
 
         // call for the projection manager
-        mProjectionManager = (MediaProjectionManager) mAppActivity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        mProjectionManager = (MediaProjectionManager) Global.getMainActivity().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
         // start capture handling thread
         new Thread() {
@@ -69,7 +66,7 @@ public class ScreenCaptureService {
             }
         }.start();
 
-        mAppActivity.startActivityForResult(mProjectionManager.createScreenCaptureIntent(), mRequestCode);
+        Global.getMainActivity().startActivityForResult(mProjectionManager.createScreenCaptureIntent(), mRequestCode);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -77,13 +74,13 @@ public class ScreenCaptureService {
             mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
             if (mMediaProjection != null) {
-                mDisplay = mAppActivity.getWindowManager().getDefaultDisplay();
+                mDisplay = Global.getMainActivity().getWindowManager().getDefaultDisplay();
 
                 // create virtual display depending on device width / height
                 createVirtualDisplay();
 
                 // register orientation change callback
-                mOrientationChangeCallback = new OrientationChangeCallback(mAppActivity);
+                mOrientationChangeCallback = new OrientationChangeCallback(Global.getMainActivity());
                 if (mOrientationChangeCallback.canDetectOrientation()) {
                     mOrientationChangeCallback.enable();
                 }
