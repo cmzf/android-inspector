@@ -12,8 +12,6 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -31,7 +29,6 @@ public class ScreenCaptureService {
     private MediaProjection mMediaProjection;
     private MediaProjectionManager mProjectionManager;
     private ImageReader mImageReader;
-    private Handler mHandler;
     private Display mDisplay;
     private VirtualDisplay mVirtualDisplay;
     private OrientationChangeCallback mOrientationChangeCallback;
@@ -56,16 +53,6 @@ public class ScreenCaptureService {
         // call for the projection manager
         mProjectionManager = (MediaProjectionManager) Global.getMainActivity().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
-        // start capture handling thread
-        new Thread() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                mHandler = new Handler();
-                Looper.loop();
-            }
-        }.start();
-
         Global.getMainActivity().startActivityForResult(mProjectionManager.createScreenCaptureIntent(), mRequestCode);
     }
 
@@ -86,13 +73,13 @@ public class ScreenCaptureService {
                 }
 
                 // register media projection stop callback
-                mMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
+                mMediaProjection.registerCallback(new MediaProjectionStopCallback(), Global.getMainHandler());
             }
         }
     }
 
     public void stopProjection() {
-        mHandler.post(() -> {
+        Global.getMainHandler().post(() -> {
             if (mMediaProjection != null) {
                 mMediaProjection.stop();
             }
@@ -106,8 +93,8 @@ public class ScreenCaptureService {
         mImageReader = ImageReader.newInstance(mMetrics.widthPixels, mMetrics.heightPixels, PixelFormat.RGBA_8888, 2);
         mVirtualDisplay = mMediaProjection.createVirtualDisplay(TAG, mMetrics.widthPixels, mMetrics.heightPixels, mMetrics.densityDpi,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
-                mImageReader.getSurface(), null, mHandler);
-        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);
+                mImageReader.getSurface(), null, Global.getMainHandler());
+        mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), Global.getMainHandler());
     }
 
     public byte[] getScreenImage() {
@@ -153,7 +140,7 @@ public class ScreenCaptureService {
 
         @Override
         public void onOrientationChanged(int orientation) {
-            mHandler.postDelayed(() -> {
+            Global.getMainHandler().postDelayed(() -> {
                 try {
                     // clean up
                     if (mVirtualDisplay != null) mVirtualDisplay.release();
@@ -172,7 +159,7 @@ public class ScreenCaptureService {
         @Override
         public void onStop() {
             Log.e("ScreenCaptureService", "stopping projection.");
-            mHandler.post(() -> {
+            Global.getMainHandler().post(() -> {
                 if (mVirtualDisplay != null) mVirtualDisplay.release();
                 if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
                 if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
