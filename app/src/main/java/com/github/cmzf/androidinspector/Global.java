@@ -3,6 +3,7 @@ package com.github.cmzf.androidinspector;
 import android.app.Application;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.widget.Toast;
 
 public class Global {
     private static MainActivity mainActivity;
@@ -51,5 +52,13 @@ public class Global {
             mainHandlerThread.start();
         }
         return mainHandlerThread;
+    }
+
+    public static void toast(String text) {
+        toast(text, Toast.LENGTH_LONG);
+    }
+
+    public static void toast(String text, int duration) {
+        Toast.makeText(getMainActivity(), text, duration).show();
     }
 }

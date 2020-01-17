@@ -102,24 +102,35 @@ public class MainActivity extends AppCompatActivity {
         TextView urlView = getInspectorUrlView();
 
         if (button.getText().toString().toLowerCase().equals("start")) {
-            int port;
-            try {
-                port = Integer.valueOf(String.valueOf(portView.getText()));
-                if (port < 1024 || port > 65535) {
-                    throw new Exception();
+            button.setEnabled(false);
+            button.setBackgroundColor(Color.LTGRAY);
+
+            Utils.ensureAccessibilityServiceEnabled(() -> {
+                int port;
+                try {
+                    port = Integer.valueOf(String.valueOf(portView.getText()));
+                    if (port < 1024 || port > 65535) {
+                        throw new Exception();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(this, "port not allowed!", Toast.LENGTH_LONG).show();
+                    return;
                 }
-            } catch (Exception e) {
-                Toast.makeText(this, "port not allowed!", Toast.LENGTH_LONG).show();
-                return;
-            }
 
-            portView.setEnabled(false);
-            urlView.setVisibility(View.VISIBLE);
+                runOnUiThread(() -> {
+                    portView.setEnabled(false);
+                    urlView.setVisibility(View.VISIBLE);
+                });
 
-            Global.getInspectorServer().startServer(port);
-            Global.getScreenCaptureService().startProjection(REQUESR_SCREEN_CAPTURE);
+                Global.getInspectorServer().startServer(port);
+                Global.getScreenCaptureService().startProjection(REQUESR_SCREEN_CAPTURE);
 
-            delayToggleButton(button, "STOP");
+                delayToggleButton(button, "STOP");
+            }, () -> {
+                runOnUiThread(() -> {
+                    toggleInspectorServer(view);
+                });
+            });
         } else {
             portView.setEnabled(true);
             urlView.setVisibility(View.INVISIBLE);
