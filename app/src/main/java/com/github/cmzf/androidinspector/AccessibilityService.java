@@ -21,9 +21,16 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
 
     @Override
     protected void onServiceConnected() {
-        instance = this;
         Log.v(TAG, "onServiceConnected: " + getServiceInfo().toString());
         super.onServiceConnected();
+        instance = this;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.v(TAG, "onServiceDisconnected: " + getServiceInfo().toString());
+        super.onDestroy();
+        instance = null;
     }
 
     @Override
@@ -77,5 +84,4 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         }
         return UiObject.wrap(root);
     }
-
 }
