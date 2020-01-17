@@ -164,6 +164,9 @@ public class ScreenCaptureService {
                 if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
                 if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
                 mMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
+                mMediaProjection.stop();
+                mMediaProjection = null;
+                mProjectionManager = null;
             });
         }
     }

@@ -22,11 +22,7 @@ public class InspectorServer {
         return instance;
     }
 
-    public void startServer() {
-        startServer(8080);
-    }
-
-    public void stop() {
+    public void stopServer() {
         httpServer.stop();
         asyncServer.stop();
     }
@@ -45,7 +41,7 @@ public class InspectorServer {
     }
 
     public void startServer(int port) {
-        stop();
+        stopServer();
         httpServer.get("/api/tree", this::apiTree);
         httpServer.get("/api/screen", this::apiScreen);
         httpServer.get("/.*", this::assetLoader);
