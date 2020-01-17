@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Inspector</string>
+    <string name="activity_name">Android Inspector</string>
     <string name="text_accessibility_service_description">Android Inspector</string>
 </resources>
