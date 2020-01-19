@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/checkVersion"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:ems="10"
         android:fontFamily="monospace"
@@ -27,13 +27,12 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="90dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:fontFamily="monospace"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
-        android:text="An effective UI layout inspector app for Android and Appium, with embed HTTP server, is an alternative to uiautomatorviewer (monitor.bat).
-        \n\nConnect your PC and mobile in the same WIFI, or adb forward over a USB connection, then open the URL."
+        android:text="Connect your PC and mobile in the same WIFI, or adb forward over a USB connection, then open the URL."
         android:textColor="#000"
         android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -79,7 +78,7 @@
     <TextView
         android:id="@+id/inspectorUrl"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:ems="10"
         android:fontFamily="monospace"
         android:gravity="center"
