@@ -30,6 +30,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
     public void onDestroy() {
         Log.v(TAG, "onServiceDisconnected: " + getServiceInfo().toString());
         super.onDestroy();
+        super.disableSelf();
         instance = null;
     }
 

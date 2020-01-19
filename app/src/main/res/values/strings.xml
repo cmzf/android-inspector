@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Inspector</string>
     <string name="activity_name">Android Inspector</string>
-    <string name="text_accessibility_service_description">Android Inspector</string>
+    <string name="text_accessibility_service_description">If accessibility permission has been on, please turn off then turn on.</string>
 </resources>
