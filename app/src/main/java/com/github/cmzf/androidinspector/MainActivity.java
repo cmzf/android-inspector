@@ -1,5 +1,6 @@
 package com.github.cmzf.androidinspector;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -116,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
             button.setBackgroundColor(Color.LTGRAY);
 
             Utils.ensureAccessibilityServiceEnabled(() -> {
+                bringMeFront();
+
                 int port;
                 try {
                     port = Integer.valueOf(String.valueOf(portView.getText()));
@@ -124,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     Toast.makeText(this, "port not allowed!", Toast.LENGTH_LONG).show();
+
+                    runOnUiThread(() -> {
+                        button.setEnabled(true);
+                        button.setBackgroundColor(Color.parseColor("#33CC33"));
+                    });
                     return;
                 }
 
@@ -138,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
 
                 delayToggleButton(button, "STOP");
             }, () -> {
+                bringMeFront();
+
                 runOnUiThread(() -> {
                     toggleInspectorServer(view);
                 });
@@ -150,6 +160,17 @@ public class MainActivity extends AppCompatActivity {
             Global.getScreenCaptureService().stopProjection();
 
             delayToggleButton(button, "START");
+        }
+    }
+
+    private void bringMeFront() {
+        final Intent intent = new Intent(this, getClass());
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        try {
+            pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
         }
     }
 

@@ -50,7 +50,6 @@ class Utils {
             @Override
             public void run() {
                 if (Global.getAccessibilityService() != null) {
-                    Global.toast("accessibility connected");
                     enterCallback.run();
                     Global.getMainHandler().postDelayed(exitWrapper, checkInterval);
                 } else {
