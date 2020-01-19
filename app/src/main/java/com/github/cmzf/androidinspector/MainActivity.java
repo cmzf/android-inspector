@@ -50,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
         return this.findViewById(R.id.serverPort);
     }
 
+    private Button getServerTogglerView() {
+        return this.findViewById(R.id.serverToggler);
+    }
+
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.inspectorUrl:
@@ -102,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
         TextView urlView = getInspectorUrlView();
 
         if (button.getText().toString().toLowerCase().equals("start")) {
+            if (!Global.getScreenCaptureService().hasPermission()) {
+                Global.toast("grant capture permission first");
+                Global.getScreenCaptureService().requestProjection(REQUESR_SCREEN_CAPTURE);
+                return;
+            }
+
             button.setEnabled(false);
             button.setBackgroundColor(Color.LTGRAY);
 
@@ -122,8 +132,9 @@ public class MainActivity extends AppCompatActivity {
                     urlView.setVisibility(View.VISIBLE);
                 });
 
+
                 Global.getInspectorServer().startServer(port);
-                Global.getScreenCaptureService().startProjection(REQUESR_SCREEN_CAPTURE);
+                Global.getScreenCaptureService().startProjection();
 
                 delayToggleButton(button, "STOP");
             }, () -> {
@@ -151,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Global.getScreenCaptureService().onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUESR_SCREEN_CAPTURE && resultCode == RESULT_OK) {
+            toggleInspectorServer(getServerTogglerView());
+        }
     }
 
     @Override

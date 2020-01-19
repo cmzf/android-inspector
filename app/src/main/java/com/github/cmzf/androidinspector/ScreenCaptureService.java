@@ -2,6 +2,7 @@ package com.github.cmzf.androidinspector;
 
 // https://github.com/mtsahakis/MediaProjectionDemo
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -43,37 +44,28 @@ public class ScreenCaptureService {
         return sInstance;
     }
 
-    public void startProjection(int requestCode) {
-        mRequestCode = requestCode;
+    public void startProjection() {
+        mDisplay = Global.getMainActivity().getWindowManager().getDefaultDisplay();
 
-        if (mProjectionManager != null) {
-            return;
+        // create virtual display depending on device width / height
+        createVirtualDisplay();
+
+        // register orientation change callback
+        mOrientationChangeCallback = new OrientationChangeCallback(Global.getMainActivity());
+        if (mOrientationChangeCallback.canDetectOrientation()) {
+            mOrientationChangeCallback.enable();
         }
 
-        // call for the projection manager
-        mProjectionManager = (MediaProjectionManager) Global.getMainActivity().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-
-        Global.getMainActivity().startActivityForResult(mProjectionManager.createScreenCaptureIntent(), mRequestCode);
+        // register media projection stop callback
+        mMediaProjection.registerCallback(new MediaProjectionStopCallback(), Global.getMainHandler());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == mRequestCode) {
-            mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-
-            if (mMediaProjection != null) {
-                mDisplay = Global.getMainActivity().getWindowManager().getDefaultDisplay();
-
-                // create virtual display depending on device width / height
-                createVirtualDisplay();
-
-                // register orientation change callback
-                mOrientationChangeCallback = new OrientationChangeCallback(Global.getMainActivity());
-                if (mOrientationChangeCallback.canDetectOrientation()) {
-                    mOrientationChangeCallback.enable();
-                }
-
-                // register media projection stop callback
-                mMediaProjection.registerCallback(new MediaProjectionStopCallback(), Global.getMainHandler());
+            if (resultCode == Activity.RESULT_OK) {
+                mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+            } else {
+                mProjectionManager = null;
             }
         }
     }
@@ -103,6 +95,19 @@ public class ScreenCaptureService {
             mScreenBitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream);
             return stream.toByteArray();
         }
+    }
+
+    public boolean hasPermission() {
+        return mMediaProjection != null;
+    }
+
+    public void requestProjection(int requestCode) {
+        mRequestCode = requestCode;
+
+        // call for the projection manager
+        mProjectionManager = (MediaProjectionManager) Global.getMainActivity().getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+
+        Global.getMainActivity().startActivityForResult(mProjectionManager.createScreenCaptureIntent(), mRequestCode);
     }
 
     private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
@@ -164,7 +169,6 @@ public class ScreenCaptureService {
                 if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
                 if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
                 mMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
-                mMediaProjection.stop();
                 mMediaProjection = null;
                 mProjectionManager = null;
             });
