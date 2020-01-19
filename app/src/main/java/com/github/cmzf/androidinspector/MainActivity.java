@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (button.getText().toString().toLowerCase().equals("start")) {
             if (!Global.getScreenCaptureService().hasPermission()) {
-                Global.toast("grant capture permission first");
                 Global.getScreenCaptureService().requestProjection(REQUESR_SCREEN_CAPTURE);
                 return;
             }
