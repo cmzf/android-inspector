@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.github.cmzf.androidinspector"
         minSdkVersion 26
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 200119
         versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
