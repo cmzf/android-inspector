@@ -1,0 +1,32 @@
+name: Generate APK
+on:
+  push:
+    branches: [ master ]
+    pull_request:
+      branches: [ master ]
+
+jobs:
+
+  apk:
+    name: Generate APK
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.0.3
+
+      - name: Grant Permission to Execute
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: bash ./gradlew assembleDebug --stacktrace
+
+      - name: Upload APK to Github Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: app/build/outputs/apk/debug/app-debug.apk
+          
