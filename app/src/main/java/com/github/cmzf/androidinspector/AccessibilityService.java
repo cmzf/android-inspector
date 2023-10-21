@@ -59,7 +59,7 @@ public class AccessibilityService extends android.accessibilityservice.Accessibi
         try {
             ComponentName componentName = new ComponentName(pkgName, clsName);
             currentActivity = Global.getMainActivity().getPackageManager().getActivityInfo(componentName, 0).name;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             return;
         }
     }
